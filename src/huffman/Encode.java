@@ -32,8 +32,6 @@ public class Encode {
             System.err.format("IO exception, fool: %s%n", io);
         }
 
-//        printList(chList);
-
         return chList;
     }
 
@@ -43,6 +41,11 @@ public class Encode {
         }
     }
 
+    /**
+     * Writes the encoded text to a file.
+     *
+     * @param path the path to the destination file
+     */
     public static void writeToOutput(String path) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path));
@@ -57,6 +60,7 @@ public class Encode {
     public static void main(String[] args) {
         String inFileName  = args[0];
         String outFileName = args[1];
-        readInputFile(inFileName);
+        List<Character> ls = readInputFile(inFileName);
+        HuffEncoder huff = new HuffEncoder(ls);
     }
 }

@@ -7,6 +7,9 @@ package huffman;
  */
 public class HuffmanTree {
 
+    /**
+     * Class to represent a Huffman Binary Tree Node.
+     */
     private class BinaryNode implements Comparable<BinaryNode> {
         char character;
         String code;
