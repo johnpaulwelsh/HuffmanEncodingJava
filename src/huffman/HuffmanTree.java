@@ -1,5 +1,9 @@
 package huffman;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Class to represent a Huffman Binary Tree.
  *
@@ -7,70 +11,123 @@ package huffman;
  */
 public class HuffmanTree {
 
-    /**
-     * Class to represent a Huffman Binary Tree Node.
+    /*
+     * Private variables that the HuffmanTree uses.
      */
-    private class BinaryNode implements Comparable<BinaryNode> {
-        char character;
-        String code;
-        BinaryNode left;
-        BinaryNode right;
-
-        public BinaryNode(char character, String code, BinaryNode left, BinaryNode right) {
-            this.character = character;
-            this.code = code;
-            this.left = left;
-            this.right = right;
-        }
-
-        public BinaryNode(char character, String code) {
-            this(character, code, null, null);
-        }
-
-        @Override
-        public int compareTo(BinaryNode otherChar) {
-            char us = this.character;
-            char them = otherChar.character;
-            if (us > them) {
-                return -1;
-            } else if (us < them) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
     private BinaryNode root;
-    private BinaryNode left;
-    private BinaryNode right;
+    private List<BinaryNode> nodeQueue;
 
+    /**
+     * Constructor for HuffmanTree.
+     */
     public HuffmanTree() {
         this.root = null;
+        this.nodeQueue = new ArrayList<BinaryNode>();
     }
 
     public boolean isEmpty() {
-        return (this.root == null);
+        return (root == null);
     }
 
     public void clear() {
-        this.root = null;
+        root = null;
     }
 
+    /**
+     * Makes a new BinaryNode for each character in the input. These are not
+     * yet in tree structure, but are stored in a List, from which the nodes
+     * will be grabbed when we create the tree.
+     *
+     * @param inputChars  the List of input characters
+     * @param frequencies the mapping from each char to its frequency
+     *                    in the input file
+     */
+    public void makeNodesForEachChar(List<Character> inputChars,
+                                     Map<Character, Integer> frequencies) {
+        for (char ch : inputChars) {
+            int freq = frequencies.get(ch);
+            nodeQueue.add(new BinaryNode(ch, freq));
+        }
+    }
+
+    public List<BinaryNode> getNodeQueue() {
+        return nodeQueue;
+    }
+
+    /**
+     * Inserts a BinaryNode into the HuffmanTree.
+     *
+     * @param node the new node being inserted
+     */
     public void insert(BinaryNode node) {
-
+        insertAux(root, node);
     }
 
-    public BinaryNode remove(BinaryNode node) {
-
-        return null;
+    private void insertAux(BinaryNode current, BinaryNode node) {
+        if (current == null) {
+            current = node;
+        } else if (node.compareTo(current) < 0) {
+            insertAux(current.left, node);
+        } else {
+            insertAux(current.right, node);
+        }
     }
 
+    public BinaryNode findNode(BinaryNode current, BinaryNode node) {
+        if (current.compareTo(node) == 0) {
+            return current;
+        } else if (node.compareTo(current) < 0) {
+            return findNode(current.left, node);
+        } else {
+            return findNode(current.right, node);
+        }
+    }
+
+    public int buildCodeForLeaf(BinaryNode leaf) {
+        return buildAux(root, leaf, '0'); // TODO start with a 0?
+    }
+
+    public int buildAux(BinaryNode current, BinaryNode leaf, int code) {
+        if (leaf.compareTo(current) == 0) {
+            return code;
+        } else if (leaf.compareTo(current) < 0) {
+            return buildAux(current.left, leaf, code); // TODO alter code as it goes
+        } else {
+            return buildAux(current.right, leaf, code); // TODO alter code as it goes
+        }
+    }
+
+    /**
+     * Gets the character out of the given BinaryNode.
+     * @param node the node in question
+     * @return     the character in that node
+     */
     public char getCharacterAt(BinaryNode node) {
         return (node == null) ? 0x00 : node.character;
     }
 
-    public String getCodeAt(BinaryNode node) {
-        return (node == null) ? null : node.code;
+    /**
+     * Gets the frequency out of the given BinaryNode.
+     * @param node the node in question
+     * @return     the frequency of the character in that node
+     */
+    public int getFrequencyAt(BinaryNode node) {
+        return (node == null) ? 0 : node.frequency;
+    }
+
+    /*
+     * Boolean methods for whether an element has a child or children
+     */
+
+    public boolean hasChildren(BinaryNode node) {
+        return hasLeftChild(node) || hasRightChild(node);
+    }
+
+    public boolean hasLeftChild(BinaryNode node) {
+        return (node.left != null);
+    }
+
+    public boolean hasRightChild(BinaryNode node) {
+        return (node.right != null);
     }
 }

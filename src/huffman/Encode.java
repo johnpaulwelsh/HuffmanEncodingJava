@@ -62,5 +62,6 @@ public class Encode {
         String outFileName = args[1];
         List<Character> ls = readInputFile(inFileName);
         HuffEncoder huff = new HuffEncoder(ls);
+        huff.encode();
     }
 }
