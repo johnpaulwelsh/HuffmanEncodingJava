@@ -4,12 +4,10 @@ import java.io.*;
 
 public class Decode {
 
-    private static BufferedInputStream bis;
-    private static BufferedOutputStream bos;
-
+    // won't be void
     public static void readInputFile(String path) {
         try {
-            bis = new BufferedInputStream(new FileInputStream(path));
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path));
             // other stuff
 
         } catch (FileNotFoundException fnf) {
@@ -19,7 +17,7 @@ public class Decode {
 
     public static void writeToOutput(String path) {
         try {
-            bos = new BufferedOutputStream(new FileOutputStream(path));
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(path));
             // other stuff
 
         } catch (IOException io) {

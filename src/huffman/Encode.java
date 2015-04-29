@@ -5,20 +5,23 @@ import java.util.*;
 
 public class Encode {
 
-    private static BufferedReader br;
-    private static BufferedWriter bw;
-
-    public static void readInputFile(String path) {
-        List<String> chList = new ArrayList<String>();
+    /**
+     * Reads in the character-based data from the given file,
+     * one char at a time.
+     *
+     * @param path the filepath for the input file
+     * @return     a List containing every char from the input file
+     */
+    public static List<Character> readInputFile(String path) {
+        List<Character> chList = new ArrayList<Character>();
 
         try {
-            String line;
-            String[] lineList;
-            br = new BufferedReader(new FileReader(path));
+            int ch;
+            BufferedReader br = new BufferedReader(new FileReader(path));
 
-            while ((line = br.readLine()) != null) {
-                lineList = line.split("");
-                chList.addAll(Arrays.asList(lineList));
+            // A character code of -1 represents the end of the input
+            while ((ch = br.read()) >= 0) {
+                chList.add((char) ch);
             }
 
             br.close();
@@ -28,11 +31,21 @@ public class Encode {
         } catch (IOException io) {
             System.err.format("IO exception, fool: %s%n", io);
         }
+
+//        printList(chList);
+
+        return chList;
+    }
+
+    public static void printList(List<Character> ls) {
+        for (char c : ls) {
+            System.out.println(c);
+        }
     }
 
     public static void writeToOutput(String path) {
         try {
-            bw = new BufferedWriter(new FileWriter(path));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(path));
             // other stuff
             bw.close();
 

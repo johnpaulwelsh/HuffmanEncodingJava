@@ -8,25 +8,33 @@ package huffman;
 public class HuffmanTree {
 
     private class BinaryNode implements Comparable<BinaryNode> {
-        String character;
+        char character;
         String code;
         BinaryNode left;
         BinaryNode right;
 
-        public BinaryNode(String character, String code, BinaryNode left, BinaryNode right) {
+        public BinaryNode(char character, String code, BinaryNode left, BinaryNode right) {
             this.character = character;
             this.code = code;
             this.left = left;
             this.right = right;
         }
 
-        public BinaryNode(String character, String code) {
+        public BinaryNode(char character, String code) {
             this(character, code, null, null);
         }
 
         @Override
         public int compareTo(BinaryNode otherChar) {
-            return this.character.compareTo(otherChar.character);
+            char us = this.character;
+            char them = otherChar.character;
+            if (us > them) {
+                return -1;
+            } else if (us < them) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -55,8 +63,8 @@ public class HuffmanTree {
         return null;
     }
 
-    public String getCharacterAt(BinaryNode node) {
-        return (node == null) ? "" : node.character;
+    public char getCharacterAt(BinaryNode node) {
+        return (node == null) ? 0x00 : node.character;
     }
 
     public String getCodeAt(BinaryNode node) {
