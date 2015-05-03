@@ -35,8 +35,6 @@ public class HuffEncoder {
 
     /**
      * Counts the frequencies of each character in the original list.
-     * Stores them in a TreeMap for efficient lookup, and because
-     * red-black trees are amazing.
      */
     private void countFrequencies() {
         for (char c : origInputChars) {
@@ -79,8 +77,7 @@ public class HuffEncoder {
      */
     private void makeHuffCodes() {
         for (BinaryNode leaf : tree.getLeafQueueCopy()) {
-            System.out.println("leaf = " + leaf.character + " freq = " + leaf.frequency);
-//            huffCodes.put(leaf.character, tree.buildCodeForLeaf(leaf));
+            huffCodes.put(leaf.character, tree.buildCodeForLeaf(leaf));
         }
     }
 

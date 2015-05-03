@@ -95,9 +95,9 @@ public class HuffmanTree {
         if (leaf.compareTo(current) == 0) {
             return code;
         } else if (leaf.compareTo(current) < 0) {
-            return buildAux(current.left, leaf, code << 1 + 0);
+            return buildAux(current.left, leaf, code + 1);
         } else {
-            return buildAux(current.right, leaf, code << 1 + 1);
+            return buildAux(current.right, leaf, code + 10);
         }
     }
 
