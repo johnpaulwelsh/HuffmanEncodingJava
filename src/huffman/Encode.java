@@ -24,6 +24,8 @@ public class Encode {
                 chList.add((char) ch);
             }
 
+            // TODO deal with EOF character
+
             br.close();
 
         } catch (FileNotFoundException fnf) {
@@ -46,10 +48,11 @@ public class Encode {
      *
      * @param path the path to the destination file
      */
-    public static void writeToOutput(String path) {
+    public static void writeToOutput(String path, String text) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path));
             // other stuff
+            bw.write(text);
             bw.close();
 
         } catch (IOException io) {

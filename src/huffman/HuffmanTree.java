@@ -1,8 +1,6 @@
 package huffman;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class to represent a Huffman Binary Tree.
@@ -15,14 +13,14 @@ public class HuffmanTree {
      * Private variables that the HuffmanTree uses.
      */
     private BinaryNode root;
-    private List<BinaryNode> nodeQueue;
+    private Queue<BinaryNode> nodeQueue;
 
     /**
      * Constructor for HuffmanTree.
      */
     public HuffmanTree() {
         this.root = null;
-        this.nodeQueue = new ArrayList<BinaryNode>();
+        this.nodeQueue = new PriorityQueue<BinaryNode>();
     }
 
     public boolean isEmpty() {
@@ -46,11 +44,11 @@ public class HuffmanTree {
                                      Map<Character, Integer> frequencies) {
         for (char ch : inputChars) {
             int freq = frequencies.get(ch);
-            nodeQueue.add(new BinaryNode(ch, freq));
+            nodeQueue.offer(new BinaryNode(ch, freq));
         }
     }
 
-    public List<BinaryNode> getNodeQueue() {
+    public Queue<BinaryNode> getNodeQueue() {
         return nodeQueue;
     }
 
@@ -83,17 +81,24 @@ public class HuffmanTree {
         }
     }
 
+    /**
+     * Traverses the HuffmanTree looking for the given leaf, and
+     * accumulating the binary code as it goes.
+     *
+     * @param leaf the leaf node being searched for
+     * @return     the binary Huffman code
+     */
     public int buildCodeForLeaf(BinaryNode leaf) {
-        return buildAux(root, leaf, '0'); // TODO start with a 0?
+        return buildAux(root, leaf, 0);
     }
 
     public int buildAux(BinaryNode current, BinaryNode leaf, int code) {
         if (leaf.compareTo(current) == 0) {
             return code;
         } else if (leaf.compareTo(current) < 0) {
-            return buildAux(current.left, leaf, code); // TODO alter code as it goes
+            return buildAux(current.left, leaf, code << 1);
         } else {
-            return buildAux(current.right, leaf, code); // TODO alter code as it goes
+            return buildAux(current.right, leaf, code << 1 + 1);
         }
     }
 

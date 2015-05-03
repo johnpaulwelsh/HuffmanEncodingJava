@@ -47,18 +47,19 @@ public class HuffEncoder {
      */
     private BinaryNode buildHuffTree() {
         tree.makeNodesForEachChar(origInputChars, frequencies);
-        List<BinaryNode> queue = tree.getNodeQueue();
-        Collections.sort(queue);
+        Queue<BinaryNode> queue = tree.getNodeQueue();
 
         while (queue.size() > 2) {
-            BinaryNode x = queue.remove(0);
-            BinaryNode y = queue.remove(1);
-            BinaryNode z = new BinaryNode('0', x.frequency + y.frequency, x, y);
-            queue.add(z);
-            Collections.sort(queue);
+            BinaryNode left = queue.poll();
+            BinaryNode right = queue.poll();
+            BinaryNode combined = new BinaryNode('0',
+                                                 left.frequency + right.frequency,
+                                                 left,
+                                                 right);
+            queue.offer(combined);
         }
 
-        return queue.get(0);
+        return queue.poll();
     }
 
     /**
@@ -76,8 +77,9 @@ public class HuffEncoder {
      * Transforms the Huffman codewords into canonical Huffman codes.
      */
     private void canonizeHuffCodes() {
-        sortCodesByLength(canonCodes);
-        sortCodesByLex(canonCodes);
+        sortCodesByLength(huffCodes);
+        sortCodesByLex(huffCodes);
+        redoCodes(huffCodes);
     }
 
     private void sortCodesByLength(Map<Character, Integer> codes) {
@@ -85,6 +87,10 @@ public class HuffEncoder {
     }
 
     private void sortCodesByLex(Map<Character, Integer> codes) {
+
+    }
+
+    private void redoCodes(Map<Character, Integer> oldCodes) {
 
     }
 }
