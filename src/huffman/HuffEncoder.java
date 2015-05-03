@@ -45,6 +45,11 @@ public class HuffEncoder {
         }
     }
 
+    /**
+     * Fills a set with the original input characters, thereby removing
+     * duplicates so when we make HuffmanTree nodes for each character,
+     * we do it once for each.
+     */
     private void fillSet() {
         for (char c : origInputChars) {
             inputCharsSet.add(c);

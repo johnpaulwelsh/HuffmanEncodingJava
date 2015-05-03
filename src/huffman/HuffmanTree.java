@@ -88,18 +88,31 @@ public class HuffmanTree {
      * @return     the binary Huffman code
      */
     public int buildCodeForLeaf(BinaryNode leaf) {
-        return buildAux(root, leaf, 0);
+//        return buildAux(root, leaf, 0);
+        BinaryNode curr = root;
+        String accum = "";
+        while (curr != null && leaf.character != curr.character) {
+            if (leaf.compareTo(curr) < 0) {
+                curr = curr.left;
+                accum = accum + "0";
+            } else {
+                curr = curr.right;
+                accum = accum + "1";
+            }
+        }
+        System.out.println(accum);
+        return Integer.parseInt(accum, 2);
     }
 
-    public int buildAux(BinaryNode current, BinaryNode leaf, int code) {
-        if (leaf.compareTo(current) == 0) {
-            return code;
-        } else if (leaf.compareTo(current) < 0) {
-            return buildAux(current.left, leaf, code + 1);
-        } else {
-            return buildAux(current.right, leaf, code + 10);
-        }
-    }
+//    public int buildAux(BinaryNode current, BinaryNode leaf, int code) {
+//        if (leaf.compareTo(current) == 0) {
+//            return code;
+//        } else if (leaf.compareTo(current) < 0) {
+//            return buildAux(current.left, leaf, code + 1);
+//        } else {
+//            return buildAux(current.right, leaf, code + 10);
+//        }
+//    }
 
     public void setRoot(BinaryNode node) {
         this.root = node;
