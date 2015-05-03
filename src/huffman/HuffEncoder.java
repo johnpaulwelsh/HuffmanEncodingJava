@@ -63,7 +63,7 @@ public class HuffEncoder {
         tree.makeNodesForEachChar(inputCharsSet, frequencies);
         Queue<BinaryNode> queue = tree.getNodeQueue();
 
-        while (queue.size() > 2) {
+        while (queue.size() >= 2) {
             BinaryNode left = queue.poll();
             BinaryNode right = queue.poll();
             BinaryNode combined = new BinaryNode('0',
