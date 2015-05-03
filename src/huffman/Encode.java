@@ -24,8 +24,6 @@ public class Encode {
                 chList.add((char) ch);
             }
 
-            // TODO deal with EOF character
-
             br.close();
 
         } catch (FileNotFoundException fnf) {

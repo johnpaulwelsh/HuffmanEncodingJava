@@ -14,6 +14,7 @@ public class HuffmanTree {
      */
     private BinaryNode root;
     private Queue<BinaryNode> nodeQueue;
+    private Queue<BinaryNode> leafQueueCopy;
 
     /**
      * Constructor for HuffmanTree.
@@ -21,14 +22,7 @@ public class HuffmanTree {
     public HuffmanTree() {
         this.root = null;
         this.nodeQueue = new PriorityQueue<BinaryNode>();
-    }
-
-    public boolean isEmpty() {
-        return (root == null);
-    }
-
-    public void clear() {
-        root = null;
+        this.leafQueueCopy = new PriorityQueue<BinaryNode>();
     }
 
     /**
@@ -40,16 +34,21 @@ public class HuffmanTree {
      * @param frequencies the mapping from each char to its frequency
      *                    in the input file
      */
-    public void makeNodesForEachChar(List<Character> inputChars,
+    public void makeNodesForEachChar(Set<Character> inputChars,
                                      Map<Character, Integer> frequencies) {
         for (char ch : inputChars) {
             int freq = frequencies.get(ch);
             nodeQueue.offer(new BinaryNode(ch, freq));
+            leafQueueCopy.offer(new BinaryNode(ch, freq));
         }
     }
 
     public Queue<BinaryNode> getNodeQueue() {
         return nodeQueue;
+    }
+
+    public Queue<BinaryNode> getLeafQueueCopy() {
+        return leafQueueCopy;
     }
 
     /**
@@ -96,10 +95,14 @@ public class HuffmanTree {
         if (leaf.compareTo(current) == 0) {
             return code;
         } else if (leaf.compareTo(current) < 0) {
-            return buildAux(current.left, leaf, code << 1);
+            return buildAux(current.left, leaf, code << 1 + 0);
         } else {
             return buildAux(current.right, leaf, code << 1 + 1);
         }
+    }
+
+    public void setRoot(BinaryNode node) {
+        this.root = node;
     }
 
     /**

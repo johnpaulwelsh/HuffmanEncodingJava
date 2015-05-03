@@ -10,6 +10,7 @@ import java.util.*;
 public class HuffEncoder {
 
     private List<Character> origInputChars;
+    private Set<Character>  inputCharsSet;
     private Map<Character, Integer> frequencies;
     private Map<Character, Integer> huffCodes;
     private Map<Character, Integer> canonCodes;
@@ -17,14 +18,19 @@ public class HuffEncoder {
 
     public HuffEncoder(List<Character> ls) {
         this.origInputChars = ls;
+        frequencies = new TreeMap<Character, Integer>();
+        this.inputCharsSet = new TreeSet<Character>();
+        huffCodes = new TreeMap<Character, Integer>();
+        canonCodes = new TreeMap<Character, Integer>();
     }
 
     public void encode() {
         countFrequencies();
+        fillSet();
         tree = new HuffmanTree();
-        tree.insert(buildHuffTree());
+        tree.setRoot(buildHuffTree());
         makeHuffCodes();
-        canonizeHuffCodes();
+//        canonizeHuffCodes();
     }
 
     /**
@@ -33,7 +39,6 @@ public class HuffEncoder {
      * red-black trees are amazing.
      */
     private void countFrequencies() {
-        frequencies = new TreeMap<Character, Integer>();
         for (char c : origInputChars) {
             if (frequencies.containsKey(c))
                 frequencies.put(c, frequencies.get(c) + 1);
@@ -42,11 +47,17 @@ public class HuffEncoder {
         }
     }
 
+    private void fillSet() {
+        for (char c : origInputChars) {
+            inputCharsSet.add(c);
+        }
+    }
+
     /**
      * Builds a Huffman Tree, following the algorithm from the book.
      */
     private BinaryNode buildHuffTree() {
-        tree.makeNodesForEachChar(origInputChars, frequencies);
+        tree.makeNodesForEachChar(inputCharsSet, frequencies);
         Queue<BinaryNode> queue = tree.getNodeQueue();
 
         while (queue.size() > 2) {
@@ -67,9 +78,9 @@ public class HuffEncoder {
      * character in the tree.
      */
     private void makeHuffCodes() {
-        huffCodes = new TreeMap<Character, Integer>();
-        for (BinaryNode leaf : tree.getNodeQueue()) {
-            huffCodes.put(leaf.character, tree.buildCodeForLeaf(leaf));
+        for (BinaryNode leaf : tree.getLeafQueueCopy()) {
+            System.out.println("leaf = " + leaf.character + " freq = " + leaf.frequency);
+//            huffCodes.put(leaf.character, tree.buildCodeForLeaf(leaf));
         }
     }
 
