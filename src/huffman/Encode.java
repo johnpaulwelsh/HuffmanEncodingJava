@@ -35,12 +35,6 @@ public class Encode {
         return chList;
     }
 
-    public static void printList(List<Character> ls) {
-        for (char c : ls) {
-            System.out.println(c);
-        }
-    }
-
     /**
      * Writes the encoded text to a file.
      *
@@ -63,6 +57,7 @@ public class Encode {
         String outFileName = args[1];
         List<Character> ls = readInputFile(inFileName);
         HuffEncoder huff = new HuffEncoder(ls);
-        huff.encode();
+        String output = huff.encode();
+        writeToOutput(outFileName, output);
     }
 }

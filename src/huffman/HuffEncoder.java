@@ -15,6 +15,7 @@ public class HuffEncoder {
     private List<CharCodePair>      huffPairs;
     private Map<Character, String>  canonCodes;
     private HuffmanTree             tree;
+    private ArrayList<String>       outputCodes;
 
     public HuffEncoder(List<Character> ls) {
         this.origInputChars = ls;
@@ -22,19 +23,22 @@ public class HuffEncoder {
         this.huffPairs      = new ArrayList<CharCodePair>();
         this.inputCharsSet  = new TreeSet<Character>();
         this.canonCodes     = new TreeMap<Character, String>();
+        this.outputCodes    = new ArrayList<String>();
     }
 
     /**
      * The primary functionality of the encoding process. All the
      * high-level function calls are here.
      */
-    public void encode() {
+    public String encode() {
         countFrequencies();
         fillSet();
         tree = new HuffmanTree();
         tree.setRoot(buildHuffTree());
         makeHuffCodes(tree.getRoot(), "");
         canonizeHuffCodes();
+        applyCodesToText();
+        return buildEntireOutput();
     }
 
     /**
@@ -105,19 +109,20 @@ public class HuffEncoder {
 
     /**
      * Sorts the pairs of character and Huffman code according to the length
-     * of the codeword. This is a stable sort.
+     * of the codeword, from longest to shortest. This is a stable sort.
      */
     private void sortCodesByLength() {
         Collections.sort(huffPairs, new Comparator<CharCodePair>() {
             public int compare(CharCodePair c1, CharCodePair c2) {
-                return c1.code.length() - c2.code.length();
+                return c2.code.length() - c1.code.length();
             }
         });
     }
 
     /**
      * Sorts the pairs of character and Huffman code according to the
-     * lexographical ordering of the characters. This is a stable sort.
+     * lexographical ordering of the characters, from lowest to highest.
+     * This is a stable sort.
      */
     private void sortCodesByLex() {
         Collections.sort(huffPairs, new Comparator<CharCodePair>() {
@@ -135,6 +140,67 @@ public class HuffEncoder {
      * in a Map.
      */
     private void redoCodesAndStore() {
+        // Do all the stuff for the first element. For however long its code is,
+        // make its new code all zeroes for the same length.
+        CharCodePair ccp = huffPairs.get(0);
+        int len = ccp.code.length();
+        String canonFirstCode = "";
+        for (int i = 0; i < len; i++) {
+            canonFirstCode += "0";
+        }
+        canonCodes.put(ccp.character, canonFirstCode);
 
+        // For the rest of the codes, increment the binary number and store it
+        // if the length of the current code and the previous one match.
+        // If the current code is shorter than the old one, shift the binary
+        // to the right, padding with zeroes, a number of digits equal to the
+        // difference between the lengths. Finally, pad the left side of the
+        // string form of the binary with zeroes, to make it match the expected
+        // length.
+        int runningBinaryCode = Integer.parseInt(canonFirstCode, 2);
+        int oldLen = canonFirstCode.length();
+        int currLen;
+        for (int j = 1; j < huffPairs.size(); j++) {
+            ccp = huffPairs.get(j);
+            currLen = ccp.code.length();
+
+            runningBinaryCode += 1;
+
+            if (oldLen > currLen) {
+                runningBinaryCode += 1;
+                runningBinaryCode >>>= (oldLen - currLen);
+            }
+
+            String canonCodeStr = Integer.toBinaryString(runningBinaryCode);
+
+            while (canonCodeStr.length() < currLen) {
+                canonCodeStr = "0" + canonCodeStr;
+            }
+
+            canonCodes.put(ccp.character, canonCodeStr);
+
+            oldLen = currLen;
+        }
+    }
+
+    public void applyCodesToText() {
+        for (char c : origInputChars) {
+            outputCodes.add(canonCodes.get(c));
+        }
+    }
+
+    public String buildEntireOutput() {
+        String output = "";
+
+        // Add header
+        //   Number of characters in binary
+        //   for(each unique character)
+        //     character in binary
+        //     code in binary
+        // Add the encoded data
+        //   for(each character in input)
+        //     code in binary
+
+        return output;
     }
 }
