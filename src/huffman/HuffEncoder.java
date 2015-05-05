@@ -12,25 +12,29 @@ public class HuffEncoder {
     private List<Character> origInputChars;
     private Set<Character>  inputCharsSet;
     private Map<Character, Integer> frequencies;
-    private Map<Character, Integer> huffCodes;
-    private Map<Character, Integer> canonCodes;
+    private Map<Character, String> huffCodes;
+    private Map<Character, String> canonCodes;
     private HuffmanTree tree;
 
     public HuffEncoder(List<Character> ls) {
         this.origInputChars = ls;
-        frequencies = new TreeMap<Character, Integer>();
-        this.inputCharsSet = new TreeSet<Character>();
-        huffCodes = new TreeMap<Character, Integer>();
-        canonCodes = new TreeMap<Character, Integer>();
+        this.frequencies    = new TreeMap<Character, Integer>();
+        this.inputCharsSet  = new TreeSet<Character>();
+        this.huffCodes      = new TreeMap<Character, String>();
+        this.canonCodes     = new TreeMap<Character, String>();
     }
 
+    /**
+     * The primary functionality of the encoding process. All the
+     * high-level function calls are here.
+     */
     public void encode() {
         countFrequencies();
         fillSet();
         tree = new HuffmanTree();
         tree.setRoot(buildHuffTree());
-        makeHuffCodes();
-//        canonizeHuffCodes();
+        makeHuffCodes(tree.getRoot(), "");
+        canonizeHuffCodes();
     }
 
     /**
@@ -77,12 +81,18 @@ public class HuffEncoder {
     }
 
     /**
-     * Traverses the Huffman Tree to get the codewords for each
+     * Traverses the Huffman Tree to build the codewords for each
      * character in the tree.
      */
-    private void makeHuffCodes() {
-        for (BinaryNode leaf : tree.getLeafQueueCopy()) {
-            huffCodes.put(leaf.character, tree.buildCodeForLeaf(leaf));
+    private void makeHuffCodes(BinaryNode current, String code) {
+        // When we get to a leaf, we add the running code to the map
+        if (current.left == null && current.right == null) {
+            huffCodes.put(current.character, code);
+        // Otherwise, we recurse using the left and right children,
+        // and build the code accordingly
+        } else {
+            makeHuffCodes(current.left, code + "0");
+            makeHuffCodes(current.right, code + "1");
         }
     }
 
@@ -90,20 +100,20 @@ public class HuffEncoder {
      * Transforms the Huffman codewords into canonical Huffman codes.
      */
     private void canonizeHuffCodes() {
-        sortCodesByLength(huffCodes);
-        sortCodesByLex(huffCodes);
-        redoCodes(huffCodes);
+        sortCodesByLength();
+        sortCodesByLex();
+        redoCodes();
     }
 
-    private void sortCodesByLength(Map<Character, Integer> codes) {
-
-    }
-
-    private void sortCodesByLex(Map<Character, Integer> codes) {
+    private void sortCodesByLength() {
 
     }
 
-    private void redoCodes(Map<Character, Integer> oldCodes) {
+    private void sortCodesByLex() {
+
+    }
+
+    private void redoCodes() {
 
     }
 }

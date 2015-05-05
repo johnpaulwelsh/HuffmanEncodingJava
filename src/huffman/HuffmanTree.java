@@ -20,8 +20,8 @@ public class HuffmanTree {
      * Constructor for HuffmanTree.
      */
     public HuffmanTree() {
-        this.root = null;
-        this.nodeQueue = new PriorityQueue<BinaryNode>();
+        this.root          = null;
+        this.nodeQueue     = new PriorityQueue<BinaryNode>();
         this.leafQueueCopy = new PriorityQueue<BinaryNode>();
     }
 
@@ -41,6 +41,10 @@ public class HuffmanTree {
             nodeQueue.offer(new BinaryNode(ch, freq));
             leafQueueCopy.offer(new BinaryNode(ch, freq));
         }
+
+        // TODO Add in the EOF symbol
+//        nodeQueue.offer(new BinaryNode(0x00, 1));
+//        leafQueueCopy.offer(new BinaryNode(0x00, 1));
     }
 
     public Queue<BinaryNode> getNodeQueue() {
@@ -52,74 +56,26 @@ public class HuffmanTree {
     }
 
     /**
-     * Inserts a BinaryNode into the HuffmanTree.
+     * Sets the root of the tree to be the given node.
      *
-     * @param node the new node being inserted
+     * @param node the node being set as the root
      */
-    public void insert(BinaryNode node) {
-        insertAux(root, node);
-    }
-
-    private void insertAux(BinaryNode current, BinaryNode node) {
-        if (current == null) {
-            current = node;
-        } else if (node.compareTo(current) < 0) {
-            insertAux(current.left, node);
-        } else {
-            insertAux(current.right, node);
-        }
-    }
-
-    public BinaryNode findNode(BinaryNode current, BinaryNode node) {
-        if (current.compareTo(node) == 0) {
-            return current;
-        } else if (node.compareTo(current) < 0) {
-            return findNode(current.left, node);
-        } else {
-            return findNode(current.right, node);
-        }
-    }
-
-    /**
-     * Traverses the HuffmanTree looking for the given leaf, and
-     * accumulating the binary code as it goes.
-     *
-     * @param leaf the leaf node being searched for
-     * @return     the binary Huffman code
-     */
-    public int buildCodeForLeaf(BinaryNode leaf) {
-//        return buildAux(root, leaf, 0);
-        BinaryNode curr = root;
-        String accum = "";
-        while (curr != null && leaf.character != curr.character) {
-            if (leaf.compareTo(curr) < 0) {
-                curr = curr.left;
-                accum = accum + "0";
-            } else {
-                curr = curr.right;
-                accum = accum + "1";
-            }
-        }
-        System.out.println(accum);
-        return Integer.parseInt(accum, 2);
-    }
-
-//    public int buildAux(BinaryNode current, BinaryNode leaf, int code) {
-//        if (leaf.compareTo(current) == 0) {
-//            return code;
-//        } else if (leaf.compareTo(current) < 0) {
-//            return buildAux(current.left, leaf, code + 1);
-//        } else {
-//            return buildAux(current.right, leaf, code + 10);
-//        }
-//    }
-
     public void setRoot(BinaryNode node) {
         this.root = node;
     }
 
     /**
+     * Gets the root of the tree.
+     *
+     * @return the tree root
+     */
+    public BinaryNode getRoot() {
+        return this.root;
+    }
+
+    /**
      * Gets the character out of the given BinaryNode.
+     *
      * @param node the node in question
      * @return     the character in that node
      */
@@ -129,6 +85,7 @@ public class HuffmanTree {
 
     /**
      * Gets the frequency out of the given BinaryNode.
+     *
      * @param node the node in question
      * @return     the frequency of the character in that node
      */
@@ -139,7 +96,6 @@ public class HuffmanTree {
     /*
      * Boolean methods for whether an element has a child or children
      */
-
     public boolean hasChildren(BinaryNode node) {
         return hasLeftChild(node) || hasRightChild(node);
     }
