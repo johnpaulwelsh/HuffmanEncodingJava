@@ -12,15 +12,15 @@ public class HuffEncoder {
     private List<Character> origInputChars;
     private Set<Character>  inputCharsSet;
     private Map<Character, Integer> frequencies;
-    private Map<Character, String> huffCodes;
+    private List<CharCodePair> huffPairs;
     private Map<Character, String> canonCodes;
     private HuffmanTree tree;
 
     public HuffEncoder(List<Character> ls) {
         this.origInputChars = ls;
         this.frequencies    = new TreeMap<Character, Integer>();
+        this.huffPairs      = new ArrayList<CharCodePair>();
         this.inputCharsSet  = new TreeSet<Character>();
-        this.huffCodes      = new TreeMap<Character, String>();
         this.canonCodes     = new TreeMap<Character, String>();
     }
 
@@ -87,7 +87,7 @@ public class HuffEncoder {
     private void makeHuffCodes(BinaryNode current, String code) {
         // When we get to a leaf, we add the running code to the map
         if (current.left == null && current.right == null) {
-            huffCodes.put(current.character, code);
+            huffPairs.add(new CharCodePair(current.character, code));
         // Otherwise, we recurse using the left and right children,
         // and build the code accordingly
         } else {
@@ -105,12 +105,32 @@ public class HuffEncoder {
         redoCodes();
     }
 
+    /**
+     * Sorts the pairs of character and Huffman code according to the length
+     * of the codeword. This is a stable sort.
+     */
     private void sortCodesByLength() {
-
+        Collections.sort(huffPairs, new Comparator<CharCodePair>() {
+            public int compare(CharCodePair c1, CharCodePair c2) {
+                return c1.code.length() - c2.code.length();
+            }
+        });
     }
 
+    /**
+     * Sorts the pairs of character and Huffman code according to the
+     * lexographical ordering of the characters. This is a stable sort.
+     */
     private void sortCodesByLex() {
-
+        Collections.sort(huffPairs, new Comparator<CharCodePair>() {
+            public int compare(CharCodePair c1, CharCodePair c2) {
+                if (c1.code.length() == c2.code.length()) {
+                    return c1.ch - c2.ch;
+                } else {
+                    return 0;
+                }
+            }
+        });
     }
 
     private void redoCodes() {
