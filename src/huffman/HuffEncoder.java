@@ -9,12 +9,12 @@ import java.util.*;
  */
 public class HuffEncoder {
 
-    private List<Character> origInputChars;
-    private Set<Character>  inputCharsSet;
+    private List<Character>         origInputChars;
+    private Set<Character>          inputCharsSet;
     private Map<Character, Integer> frequencies;
-    private List<CharCodePair> huffPairs;
-    private Map<Character, String> canonCodes;
-    private HuffmanTree tree;
+    private List<CharCodePair>      huffPairs;
+    private Map<Character, String>  canonCodes;
+    private HuffmanTree             tree;
 
     public HuffEncoder(List<Character> ls) {
         this.origInputChars = ls;
@@ -70,13 +70,11 @@ public class HuffEncoder {
         while (queue.size() >= 2) {
             BinaryNode left = queue.poll();
             BinaryNode right = queue.poll();
-            BinaryNode combined = new BinaryNode('0',
-                                                 left.frequency + right.frequency,
-                                                 left,
-                                                 right);
+            BinaryNode combined = new BinaryNode('0', left.frequency + right.frequency, left, right);
             queue.offer(combined);
         }
 
+        // The only node left is the root
         return queue.poll();
     }
 
@@ -102,7 +100,7 @@ public class HuffEncoder {
     private void canonizeHuffCodes() {
         sortCodesByLength();
         sortCodesByLex();
-        redoCodes();
+        redoCodesAndStore();
     }
 
     /**
@@ -124,16 +122,19 @@ public class HuffEncoder {
     private void sortCodesByLex() {
         Collections.sort(huffPairs, new Comparator<CharCodePair>() {
             public int compare(CharCodePair c1, CharCodePair c2) {
-                if (c1.code.length() == c2.code.length()) {
-                    return c1.ch - c2.ch;
-                } else {
-                    return 0;
-                }
+                return (c1.code.length() == c2.code.length())
+                        ? c1.character - c2.character
+                        : 0;
             }
         });
     }
 
-    private void redoCodes() {
+    /**
+     * Recodes the codewords for each pair of character and Huffman code,
+     * according to the canonization process, and stores the final pairing
+     * in a Map.
+     */
+    private void redoCodesAndStore() {
 
     }
 }
