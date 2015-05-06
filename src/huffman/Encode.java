@@ -42,13 +42,22 @@ public class Encode {
      */
     public static void writeToOutput(String path, String text) {
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(path));
-            // other stuff
-            bw.write(text);
-            bw.close();
+            FileOutputStream fos = new FileOutputStream(path);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            byte[] array = text.getBytes();
+
+            for (byte b : array) {
+                System.out.print(b + " ");
+            }
+            System.out.println();
+
+            baos.write(array);
+
+            baos.writeTo(fos);
 
         } catch (IOException io) {
-            io.printStackTrace();
+            System.err.format("IO exception, fool: %s%n", io);
         }
     }
 

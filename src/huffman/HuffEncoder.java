@@ -31,6 +31,7 @@ public class HuffEncoder {
      * high-level function calls are here.
      */
     public String encode() {
+        origInputChars.add('\u0000');
         countFrequencies();
         fillSet();
         tree = new HuffmanTree();
@@ -183,23 +184,35 @@ public class HuffEncoder {
         }
     }
 
+    /**
+     * Applies the canonical Huffman codes to each character from the
+     * original text.
+     */
     public void applyCodesToText() {
         for (char c : origInputChars) {
             outputCodes.add(canonCodes.get(c));
         }
     }
 
+    /**
+     * Builds the text that will be outputted to the file. The file writer
+     * will be in charge of translating it ito bytes.
+     * @return the final String to be "written" to the file
+     */
     public String buildEntireOutput() {
         String output = "";
 
-        // Add header
-        //   Number of characters in binary
-        //   for(each unique character)
-        //     character in binary
-        //     code in binary
-        // Add the encoded data
-        //   for(each character in input)
-        //     code in binary
+        output += inputCharsSet.size();
+
+        for (CharCodePair ccp : huffPairs) {
+            output += ccp.character;
+            output += canonCodes.get(ccp.character).length();
+            System.out.println(ccp.character);
+        }
+
+        for (char c : origInputChars) {
+            output += canonCodes.get(c);
+        }
 
         return output;
     }
