@@ -30,7 +30,7 @@ public class HuffEncoder {
      * The primary functionality of the encoding process. All the
      * high-level function calls are here.
      */
-    public String encode() {
+    public PackageToEncode encode() {
         origInputChars.add('\u0000');
         countFrequencies();
         fillSet();
@@ -152,7 +152,7 @@ public class HuffEncoder {
         canonCodes.put(ccp.character, canonFirstCode);
 
         // For the rest of the codes, increment the binary number and store it
-        // if the length of the current code and the previous one match.
+        // if the length of the current code and the previous one's match.
         // If the current code is shorter than the old one, shift the binary
         // to the right, padding with zeroes, a number of digits equal to the
         // difference between the lengths. Finally, pad the left side of the
@@ -196,24 +196,30 @@ public class HuffEncoder {
 
     /**
      * Builds the text that will be outputted to the file. The file writer
-     * will be in charge of translating it ito bytes.
+     * will be in charge of translating it into bytes.
      * @return the final String to be "written" to the file
      */
-    public String buildEntireOutput() {
-        String output = "";
+    public PackageToEncode buildEntireOutput() {
 
-        output += inputCharsSet.size();
+        // The number of character-code pairings (k)
+        int k = huffPairs.size();
 
-        for (CharCodePair ccp : huffPairs) {
-            output += ccp.character;
-            output += canonCodes.get(ccp.character).length();
-            System.out.println(ccp.character);
+        // The k pairings of character and canonical Huffman code
+        char[] chs = new char[k];
+        int[] freqLens = new int[k];
+        for (int i = 0; i < k; i++) {
+            CharCodePair ccp = huffPairs.get(i);
+            chs[i] = ccp.character;
+            freqLens[i] = canonCodes.get(ccp.character).length();
         }
 
-        for (char c : origInputChars) {
-            output += canonCodes.get(c);
+        String[] textCodes = new String[origInputChars.size()];
+
+        // The encoded test from the input file
+        for (int j = 0; j < textCodes.length; j++) {
+            textCodes[j] = canonCodes.get(origInputChars.get(j));
         }
 
-        return output;
+        return new PackageToEncode(k, chs, freqLens, textCodes);
     }
 }

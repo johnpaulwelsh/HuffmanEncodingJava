@@ -40,20 +40,53 @@ public class Encode {
      *
      * @param path the path to the destination file
      */
-    public static void writeToOutput(String path, String text) {
+    public static void writeToOutput(String path, PackageToEncode outputPkg) {
         try {
             FileOutputStream fos = new FileOutputStream(path);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            byte[] array = text.getBytes();
+            // The number of character-code pairs
+            baos.write(outputPkg.k);
 
-            for (byte b : array) {
-                System.out.print(b + " ");
+            // Each character and its accompanying code
+            for (int i = 0; i < outputPkg.chs.length; i++) {
+                baos.write(outputPkg.chs[i]);
+                baos.write(outputPkg.freqLens[i]);
             }
-            System.out.println();
 
-            baos.write(array);
+            // Combine all the encoded strings into one
+            StringBuilder sb = new StringBuilder();
+            for(String s : outputPkg.textCodes) {
+                sb.append(s);
+            }
+            String fullEncoded = sb.toString();
 
+            // Split the combined string on every 8 characters/digits
+            List<String> splitOn8 = new ArrayList<String>();
+            String sub;
+            int start = 0;
+            int end = 8;
+            while (end < fullEncoded.length()) {
+                sub = fullEncoded.substring(start, end);
+                splitOn8.add(sub);
+                start = end;
+                end += 8;
+            }
+
+            // Just substring to the end, since there are fewer than 8 bits left
+            // (and pad it with zeroes if we need to)
+            sub = fullEncoded.substring(start);
+            for (int i = 0; i < 8 - sub.length(); i++) {
+                sub = sub + 0;
+            }
+            splitOn8.add(sub);
+
+            // Put each substring into the file, parsed as a byte
+            for (String s : splitOn8) {
+                baos.write(Integer.parseInt(s, 2));
+            }
+
+            // Write it to the file
             baos.writeTo(fos);
 
         } catch (IOException io) {
@@ -66,7 +99,7 @@ public class Encode {
         String outFileName = args[1];
         List<Character> ls = readInputFile(inFileName);
         HuffEncoder huff = new HuffEncoder(ls);
-        String output = huff.encode();
-        writeToOutput(outFileName, output);
+        PackageToEncode outputPkg = huff.encode();
+        writeToOutput(outFileName, outputPkg);
     }
 }

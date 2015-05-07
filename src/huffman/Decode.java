@@ -8,8 +8,6 @@ import java.util.TreeMap;
 
 public class Decode {
 
-    // readInputFile won't be void
-
     private static int numChars;
     private static Map<Character, Integer> charsAndCodes;
     private static List<String> textCodes;
@@ -25,6 +23,8 @@ public class Decode {
         try {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path));
             int currByte;
+
+            // TODO use bitshift operators to read the bits out of a byte
 
             // First byte will be the number of characters in the alphabet
             numChars = bis.read();
