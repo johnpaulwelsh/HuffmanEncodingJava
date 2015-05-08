@@ -7,7 +7,6 @@ package huffman;
  * @author John Paul Welsh
  */
 public class CharCodePair {
-
     protected String code;
     protected char character;
 
