@@ -11,7 +11,8 @@ public class Decode {
     private static List<Character> outputText;
 
     /**
-     *
+     * Basically a copy-paste of the canonical-code builder from Encode,
+     * but refitted to work for Decode.
      */
     private static void sortCodesIntoCanon() {
         Collections.sort(charsAndCodeLens, new Comparator<CharCodePairDecode>() {
@@ -74,7 +75,8 @@ public class Decode {
     }
 
     /**
-     *
+     * Puts the read-in canonical Huffman codes into a map,
+     * with the character as the key.
      */
     private static void placeCodesIntoMap() {
         codeCharMap = new HashMap<String, Character>();
@@ -136,7 +138,8 @@ public class Decode {
     }
 
     /**
-     *
+     * Decodes the text by the canonical codes in the binary file
+     * with the characters they represent.
      */
     public static void decodeText() {
         String builtCode = "";
@@ -149,7 +152,7 @@ public class Decode {
             // If we've built enough of a code to match one in the map,
             // add the character that matches that code to the running
             // output
-            if (codeCharMap.containsKey(builtCode)) {
+            if (codeCharMap.containsKey(builtCode) && codeCharMap.get(builtCode) != '\u0000') {
                 outputText.add(codeCharMap.get(builtCode));
                 builtCode = "";
             }
@@ -185,7 +188,7 @@ public class Decode {
      * @param args the command-line arguments
      */
     public static void main(String[] args) {
-        String inFileName  = "dongo.txt";
+        String inFileName  = "dongo.huf";
         String outFileName = "dingo2.txt";
         readInputFile(inFileName);
         decodeText();

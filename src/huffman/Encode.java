@@ -100,8 +100,8 @@ public class Encode {
      * @param args the command-line arguments
      */
     public static void main(String[] args) {
-        String inFileName  = "dingo.txt";
-        String outFileName = "dongo.txt";
+        String inFileName  = "text/sample6.txt";
+        String outFileName = "dongo.huf";
         List<Character> ls = readInputFile(inFileName);
         HuffEncoder huff = new HuffEncoder(ls);
         PackageToEncode outputPkg = huff.encode();

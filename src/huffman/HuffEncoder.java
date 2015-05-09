@@ -15,15 +15,17 @@ public class HuffEncoder {
     private List<CharCodePair>      huffPairs;
     private Map<Character, String>  canonCodes;
     private HuffmanTree             tree;
-    private ArrayList<String>       outputCodes;
 
+    /**
+     * Constructor for HuffEncoder
+     * @param ls the list of characters from the original input
+     */
     public HuffEncoder(List<Character> ls) {
         this.origInputChars = ls;
         this.frequencies    = new TreeMap<Character, Integer>();
         this.huffPairs      = new ArrayList<CharCodePair>();
         this.inputCharsSet  = new TreeSet<Character>();
         this.canonCodes     = new TreeMap<Character, String>();
-        this.outputCodes    = new ArrayList<String>();
     }
 
     /**
@@ -38,7 +40,6 @@ public class HuffEncoder {
         tree.setRoot(buildHuffTree());
         makeHuffCodes(tree.getRoot(), "");
         canonizeHuffCodes();
-        applyCodesToText();
         return buildEntireOutput();
     }
 
@@ -180,31 +181,16 @@ public class HuffEncoder {
                 }
             }
 
-            System.out.println("padded code is " + canonCodeStr);
-
             canonCodes.put(ccp.character, canonCodeStr);
 
             oldLen = currLen;
-        }
-
-        for (Map.Entry<Character, String> e : canonCodes.entrySet()) {
-            System.out.println(e.getKey() + " " + e.getValue());
-        }
-    }
-
-    /**
-     * Applies the canonical Huffman codes to each character from the
-     * original text.
-     */
-    public void applyCodesToText() {
-        for (char c : origInputChars) {
-            outputCodes.add(canonCodes.get(c));
         }
     }
 
     /**
      * Builds the text that will be outputted to the file. The file writer
      * will be in charge of translating it into bytes.
+     *
      * @return the final String to be "written" to the file
      */
     public PackageToEncode buildEntireOutput() {
