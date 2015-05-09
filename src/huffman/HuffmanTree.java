@@ -1,6 +1,9 @@
 package huffman;
 
-import java.util.*;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 
 /**
  * Class to represent a Huffman Binary Tree.
@@ -41,10 +44,6 @@ public class HuffmanTree {
             nodeQueue.offer(new BinaryNode(ch, freq));
             leafQueueCopy.offer(new BinaryNode(ch, freq));
         }
-
-        // TODO Add in the EOF symbol
-//        nodeQueue.offer(new BinaryNode(0x00, 1));
-//        leafQueueCopy.offer(new BinaryNode(0x00, 1));
     }
 
     public Queue<BinaryNode> getNodeQueue() {

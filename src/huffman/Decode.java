@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.*;
 
 public class Decode {
-    private static int numChars;
     private static List<CharCodePairDecode> charsAndCodeLens;
     private static Map<String, Character> codeCharMap;
     private static char[] fullCodeCharArray;
@@ -97,7 +96,7 @@ public class Decode {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path));
 
             // First byte will be the number of characters in the alphabet
-            numChars = bis.read();
+            int numChars = bis.read();
 
             // The next `numChars` pairs of bytes will be
             //   1) the character value
@@ -188,8 +187,8 @@ public class Decode {
      * @param args the command-line arguments
      */
     public static void main(String[] args) {
-        String inFileName  = "dongo.huf";
-        String outFileName = "dingo2.txt";
+        String inFileName  = args[0];
+        String outFileName = args[1];
         readInputFile(inFileName);
         decodeText();
         writeToOutput(outFileName);

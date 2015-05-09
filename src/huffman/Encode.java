@@ -1,7 +1,8 @@
 package huffman;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Encode {
 
@@ -100,8 +101,8 @@ public class Encode {
      * @param args the command-line arguments
      */
     public static void main(String[] args) {
-        String inFileName  = "text/sample6.txt";
-        String outFileName = "dongo.huf";
+        String inFileName  = args[0];
+        String outFileName = args[1];
         List<Character> ls = readInputFile(inFileName);
         HuffEncoder huff = new HuffEncoder(ls);
         PackageToEncode outputPkg = huff.encode();
