@@ -94,9 +94,14 @@ public class Encode {
         }
     }
 
+    /**
+     * Entry point to the program, fool.
+     *
+     * @param args the command-line arguments
+     */
     public static void main(String[] args) {
-        String inFileName  = args[0];
-        String outFileName = args[1];
+        String inFileName  = "dingo.txt";
+        String outFileName = "dongo.txt";
         List<Character> ls = readInputFile(inFileName);
         HuffEncoder huff = new HuffEncoder(ls);
         PackageToEncode outputPkg = huff.encode();

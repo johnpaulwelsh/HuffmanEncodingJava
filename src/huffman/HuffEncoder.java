@@ -168,19 +168,27 @@ public class HuffEncoder {
             runningBinaryCode += 1;
 
             if (oldLen > currLen) {
-                runningBinaryCode += 1;
                 runningBinaryCode >>>= (oldLen - currLen);
             }
 
             String canonCodeStr = Integer.toBinaryString(runningBinaryCode);
 
-            while (canonCodeStr.length() < currLen) {
-                canonCodeStr = "0" + canonCodeStr;
+            int goalLength = canonCodeStr.length();
+            if (currLen != goalLength) {
+                for (int i = 0; i < currLen - goalLength; i++) {
+                    canonCodeStr = "0" + canonCodeStr;
+                }
             }
+
+            System.out.println("padded code is " + canonCodeStr);
 
             canonCodes.put(ccp.character, canonCodeStr);
 
             oldLen = currLen;
+        }
+
+        for (Map.Entry<Character, String> e : canonCodes.entrySet()) {
+            System.out.println(e.getKey() + " " + e.getValue());
         }
     }
 

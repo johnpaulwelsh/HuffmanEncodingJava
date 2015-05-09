@@ -4,14 +4,16 @@ import java.io.*;
 import java.util.*;
 
 public class Decode {
-
     private static int numChars;
     private static List<CharCodePairDecode> charsAndCodeLens;
     private static Map<String, Character> codeCharMap;
-    private static List<String> textCodes;
-    private static List<Character> decodedText;
+    private static char[] fullCodeCharArray;
+    private static List<Character> outputText;
 
-    public static void sortCodesIntoCanon() {
+    /**
+     *
+     */
+    private static void sortCodesIntoCanon() {
         Collections.sort(charsAndCodeLens, new Comparator<CharCodePairDecode>() {
             @Override
             public int compare(CharCodePairDecode c1, CharCodePairDecode c2) {
@@ -71,6 +73,9 @@ public class Decode {
         }
     }
 
+    /**
+     *
+     */
     private static void placeCodesIntoMap() {
         codeCharMap = new HashMap<String, Character>();
         for (CharCodePairDecode ccp : charsAndCodeLens) {
@@ -100,32 +105,54 @@ public class Decode {
             for (int i = 0; i < numChars; i++) {
                 charValue = bis.read();
                 codeLength = bis.read();
+
                 charsAndCodeLens.add(new CharCodePairDecode((char) charValue, codeLength));
             }
 
             sortCodesIntoCanon();
-
             placeCodesIntoMap();
 
             // The rest of the binary is the compressed codewords for each character
             // in the original input
-
             int currByte;
             StringBuilder sb = new StringBuilder();
             while ((currByte = bis.read()) >= 0) {
-                sb.append(Integer.toBinaryString(currByte));
+                String tempCode = Integer.toBinaryString(currByte);
+                while (tempCode.length() < 8) {
+                    tempCode = "0" + tempCode;
+                }
+                sb.append(tempCode);
             }
 
-            String fullStr = sb.toString();
-
-            System.out.println(fullStr);
+            fullCodeCharArray = sb.toString().toCharArray();
 
             bis.close();
 
         } catch (FileNotFoundException fnf) {
-            fnf.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.err.format("File not found, fool: %s%n", fnf);
+        } catch (IOException io) {
+            System.err.format("IO exception, fool: %s%n", io);
+        }
+    }
+
+    /**
+     *
+     */
+    public static void decodeText() {
+        String builtCode = "";
+        outputText = new ArrayList<Character>();
+        for (int i = 0; i < fullCodeCharArray.length; i++) {
+
+            // Tack on the current bit to the running code
+            builtCode += fullCodeCharArray[i];
+
+            // If we've built enough of a code to match one in the map,
+            // add the character that matches that code to the running
+            // output
+            if (codeCharMap.containsKey(builtCode)) {
+                outputText.add(codeCharMap.get(builtCode));
+                builtCode = "";
+            }
         }
     }
 
@@ -136,21 +163,32 @@ public class Decode {
      */
     public static void writeToOutput(String path) {
         try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(path));
-            // other stuff
+            BufferedWriter bos = new BufferedWriter(new FileWriter(path));
+
+            StringBuilder sb = new StringBuilder();
+            for (char c : outputText) {
+                sb.append(c);
+            }
+
+            bos.write(sb.toString());
+
+            bos.close();
 
         } catch (IOException io) {
             io.printStackTrace();
         }
     }
 
+    /**
+     * Entry point to the program, fool.
+     *
+     * @param args the command-line arguments
+     */
     public static void main(String[] args) {
-        String inFileName  = "encoded/sample2.huf";
-        String outFileName = "dingo.huf";
+        String inFileName  = "dongo.txt";
+        String outFileName = "dingo2.txt";
         readInputFile(inFileName);
-
-
-
+        decodeText();
         writeToOutput(outFileName);
     }
 }
