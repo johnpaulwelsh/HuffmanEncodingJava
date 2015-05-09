@@ -7,13 +7,13 @@ package huffman;
 public class PackageToEncode {
     protected int k;
     protected char[] chs;
-    protected int[] freqLens;
+    protected int[] codeLens;
     protected String[] textCodes;
 
-    public PackageToEncode(int k, char[] chs, int[] freqLens, String[] textCodes) {
+    public PackageToEncode(int k, char[] chs, int[] codeLens, String[] textCodes) {
         this.k = k;
         this.chs = chs;
-        this.freqLens = freqLens;
+        this.codeLens = codeLens;
         this.textCodes = textCodes;
     }
 }

@@ -52,7 +52,7 @@ public class Encode {
             // Each character and its accompanying code
             for (int i = 0; i < outputPkg.chs.length; i++) {
                 baos.write(outputPkg.chs[i]);
-                baos.write(outputPkg.freqLens[i]);
+                baos.write(outputPkg.codeLens[i]);
             }
 
             // Combine all the encoded strings into one

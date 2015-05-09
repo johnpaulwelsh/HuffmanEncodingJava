@@ -9,12 +9,12 @@ import java.util.*;
  */
 public class HuffEncoder {
 
-    private List<Character>         origInputChars;
-    private Set<Character>          inputCharsSet;
+    private List<Character> origInputChars;
+    private Set<Character> inputCharsSet;
     private Map<Character, Integer> frequencies;
-    private List<CharCodePair>      huffPairs;
-    private Map<Character, String>  canonCodes;
-    private HuffmanTree             tree;
+    private List<CharCodePair> huffPairs;
+    public static Map<Character, String> canonCodes;
+    private HuffmanTree tree;
 
     /**
      * Constructor for HuffEncoder
@@ -200,11 +200,11 @@ public class HuffEncoder {
 
         // The k pairings of character and canonical Huffman code
         char[] chs = new char[k];
-        int[] freqLens = new int[k];
+        int[] codeLens = new int[k];
         for (int i = 0; i < k; i++) {
             CharCodePair ccp = huffPairs.get(i);
             chs[i] = ccp.character;
-            freqLens[i] = canonCodes.get(ccp.character).length();
+            codeLens[i] = canonCodes.get(ccp.character).length();
         }
 
         String[] textCodes = new String[origInputChars.size()];
@@ -214,6 +214,6 @@ public class HuffEncoder {
             textCodes[j] = canonCodes.get(origInputChars.get(j));
         }
 
-        return new PackageToEncode(k, chs, freqLens, textCodes);
+        return new PackageToEncode(k, chs, codeLens, textCodes);
     }
 }
